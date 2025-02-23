@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Custommize scrollbar style */
+.scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
