@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import TodoContent from './TodoContent'
+import useIndexedDB from '../hooks/useIndexedDB'
 
 /**
  * @typedef {import('./TodoItem').TodoItemInterface} TodoItemInterface
@@ -15,6 +16,10 @@ import TodoContent from './TodoContent'
  * @returns
  */
 const TodoList = ({ items, updateTodos }) => {
+  const { getAllItems, updateItem, deleteItem } = useIndexedDB(
+    'MyTodoList',
+    'TodoListStore'
+  )
   const finished = []
   const unfinished = []
   items.forEach((item) => {
@@ -25,21 +30,21 @@ const TodoList = ({ items, updateTodos }) => {
     }
   })
 
-  const updateChecked = (value, todo) => {
-    const todos = []
+  const updateChecked = async (value, todo) => {
     for (let item of items) {
       if (item.timestamp === todo.timestamp) {
-        todos.push({ ...item, isFinish: value })
-        continue
+        await updateItem({ ...item, isFinish: value })
+        break
       }
-      todos.push(item)
     }
+    const todos = await getAllItems()
     updateTodos(todos)
   }
 
-  const deleteItem = (item) => {
-    const newItems = items.filter((it) => item.timestamp !== it.timestamp)
-    updateTodos(newItems)
+  const handleDeleteItem = async (item) => {
+    await deleteItem(item.id)
+    const todos = await getAllItems()
+    updateTodos(todos)
   }
 
   return (
@@ -49,7 +54,7 @@ const TodoList = ({ items, updateTodos }) => {
           title="Unfinished"
           items={unfinished}
           updateChecked={updateChecked}
-          deleteItem={deleteItem}
+          deleteItem={handleDeleteItem}
         />
       )}
 
@@ -58,7 +63,7 @@ const TodoList = ({ items, updateTodos }) => {
           title="Finished"
           items={finished}
           updateChecked={updateChecked}
-          deleteItem={deleteItem}
+          deleteItem={handleDeleteItem}
         />
       )}
     </div>

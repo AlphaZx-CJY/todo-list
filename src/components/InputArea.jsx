@@ -19,11 +19,18 @@ const InputArea = ({ value, onValueChanged, onSubmit }) => {
     onSubmit()
   }
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      onSubmit()
+    }
+  }
+
   return (
     <div className="md:min-w-128 md:self-center self-stretch mx-4 border border-slate-800 rounded-lg flex overflow-hidden shrink-0">
       <input
         className="grow p-2 outline-none font-mono m-2"
         value={value}
+        onKeyDown={handleKeyDown}
         onChange={(e) => onValueChanged(e.target.value)}
         placeholder="Enter TODO ..."
       />
