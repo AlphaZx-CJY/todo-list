@@ -2,59 +2,55 @@ import { useState } from 'react'
 import TodoItem from './TodoItem'
 import PropTypes from 'prop-types'
 
-/**
- * @typedef {import('./TodoItem').TodoItemInterface} TodoItemInterface
- * @typedef {object} TodoContentProps
- * @property {string} title
- * @property {TodoItemInterface[]} items
- * @property {function} updateChecked
- * @property {function} deleteItem
- */
-
-/**
- * TodoContent Component
- *
- * @param {TodoContentProps} props
- * @returns
- */
-const TodoContent = ({ title, items, updateChecked, deleteItem }) => {
+const TodoContent = ({ title, items, onToggle, onDelete, onEdit }) => {
   const [expanded, setExpanded] = useState(true)
 
   const list = items.map((item) => (
     <TodoItem
-      key={item.timestamp}
+      key={item.id}
+      id={item.id}
       timestamp={item.timestamp}
       content={item.content}
       isFinish={item.isFinish}
-      onChecked={(value) => updateChecked(value, item)}
-      onDelete={() => deleteItem(item)}
+      priority={item.priority}
+      dueDate={item.dueDate}
+      tags={item.tags}
+      onChecked={() => onToggle(item.id)}
+      onDelete={() => onDelete(item.id)}
+      onEdit={() => onEdit(item)}
     />
   ))
 
-  const updateExpanded = () => {
-    if (list.length > 0) {
-      setExpanded(!expanded)
-    }
-  }
+  const count = list.length
 
-  const count = list.length === 0 ? '' : `[${list.length}]`
+  if (count === 0) return null
+
   return (
-    <>
-      <h2
-        className="font-bold font-mono text-xl uppercase cursor-pointer"
-        onClick={updateExpanded}
+    <div className="space-y-3">
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="flex items-center gap-3 group"
       >
-        <span className="bg-slate-800 px-2 text-gray-100 border rounded-md italic">{title}</span>
-        {count}
-      </h2>
-      <ul
-        className={`flex flex-col gap-2 overflow-y-scroll hide-scrollbar transition-all duration-300 ease-in-out ${
-          expanded ? 'max-h-1/2' : 'max-h-0'
-        }`}
-      >
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)] transition-colors">
+          {title}
+        </h2>
+        <span className="px-2 py-0.5 text-xs font-medium bg-[var(--color-muted)] text-[var(--color-text-secondary)] rounded-full">
+          {count}
+        </span>
+        <svg 
+          className={`w-4 h-4 text-[var(--color-text-tertiary)] transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      
+      <div className={`space-y-3 overflow-hidden transition-all duration-300 ${expanded ? 'opacity-100' : 'max-h-0 opacity-0'}`}>
         {list}
-      </ul>
-    </>
+      </div>
+    </div>
   )
 }
 
@@ -62,13 +58,18 @@ TodoContent.propTypes = {
   title: PropTypes.string.isRequired,
   items: PropTypes.arrayOf(
     PropTypes.shape({
-      timestamp: PropTypes.number,
-      content: PropTypes.string,
-      isFinish: PropTypes.bool,
+      id: PropTypes.number.isRequired,
+      timestamp: PropTypes.number.isRequired,
+      content: PropTypes.string.isRequired,
+      isFinish: PropTypes.bool.isRequired,
+      priority: PropTypes.string,
+      dueDate: PropTypes.number,
+      tags: PropTypes.arrayOf(PropTypes.string),
     })
   ).isRequired,
-  updateChecked: PropTypes.func.isRequired,
-  deleteItem: PropTypes.func.isRequired,
+  onToggle: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
 }
 
 export default TodoContent
