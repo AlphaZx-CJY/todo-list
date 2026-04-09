@@ -11,6 +11,7 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
   const [dueDate, setDueDate] = useState(null)
   const [tags, setTags] = useState([])
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isInteracting, setIsInteracting] = useState(false)
   const containerRef = useRef(null)
   const textareaRef = useRef(null)
 
@@ -18,8 +19,8 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
-        // Only collapse if content is empty
-        if (!content.trim()) {
+        // Don't collapse if interacting with controls or content not empty
+        if (!isInteracting && !content.trim()) {
           setIsExpanded(false)
         }
       }
@@ -27,7 +28,7 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
 
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [content])
+  }, [content, isInteracting])
 
   // Auto-resize textarea
   useEffect(() => {
@@ -65,9 +66,12 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
   }
 
   const handleCollapse = () => {
-    if (!content.trim()) {
-      setIsExpanded(false)
-    }
+    // Delay to allow click events on child components to complete
+    setTimeout(() => {
+      if (!isInteracting && !content.trim()) {
+        setIsExpanded(false)
+      }
+    }, 200)
   }
 
   return (
@@ -114,7 +118,11 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
           overflow-hidden transition-all duration-300 ease-out
           ${isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}
         `}>
-          <div className="px-4 pb-4 pt-2 border-t border-[var(--color-border-subtle)] space-y-4">
+          <div 
+            className="px-4 pb-4 pt-2 border-t border-[var(--color-border-subtle)] space-y-4"
+            onMouseEnter={() => setIsInteracting(true)}
+            onMouseLeave={() => setIsInteracting(false)}
+          >
             {/* Priority */}
             <div className="flex items-center gap-4">
               <span className="text-sm text-[var(--color-text-secondary)] font-medium min-w-[4.5rem]">Priority</span>
