@@ -11,6 +11,7 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
   const [dueDate, setDueDate] = useState(null)
   const [tags, setTags] = useState([])
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isComposing, setIsComposing] = useState(false)
   const containerRef = useRef(null)
   const textareaRef = useRef(null)
 
@@ -56,11 +57,13 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
   }
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    // Don't submit if user is using IME (input method editor)
+    if (e.key === 'Enter' && !e.shiftKey && !isComposing) {
       e.preventDefault()
       handleSubmit()
     }
     // Shift+Enter allows newline
+    // During composition (IME), Enter is handled by the input method
   }
 
   const handleCollapse = () => {
@@ -93,6 +96,8 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
             onKeyDown={handleKeyDown}
             onFocus={() => setIsExpanded(true)}
             onBlur={handleCollapse}
+            onCompositionStart={() => setIsComposing(true)}
+            onCompositionEnd={() => setIsComposing(false)}
             placeholder="Add a new task..."
             rows={1}
           />
