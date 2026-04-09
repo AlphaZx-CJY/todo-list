@@ -11,7 +11,6 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
   const [dueDate, setDueDate] = useState(null)
   const [tags, setTags] = useState([])
   const [isExpanded, setIsExpanded] = useState(false)
-  const [isComposing, setIsComposing] = useState(false)
   const containerRef = useRef(null)
   const textareaRef = useRef(null)
 
@@ -57,13 +56,12 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
   }
 
   const handleKeyDown = (e) => {
-    // Don't submit if user is using IME (input method editor)
-    if (e.key === 'Enter' && !e.shiftKey && !isComposing) {
+    // Ctrl/Cmd + Enter to submit task
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault()
       handleSubmit()
     }
-    // Shift+Enter allows newline
-    // During composition (IME), Enter is handled by the input method
+    // Plain Enter just adds newline (default textarea behavior)
   }
 
   const handleCollapse = () => {
@@ -96,8 +94,6 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
             onKeyDown={handleKeyDown}
             onFocus={() => setIsExpanded(true)}
             onBlur={handleCollapse}
-            onCompositionStart={() => setIsComposing(true)}
-            onCompositionEnd={() => setIsComposing(false)}
             placeholder="Add a new task..."
             rows={1}
           />
@@ -145,7 +141,7 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
         {!isExpanded && (
           <div className="px-4 pb-3 pt-1">
             <p className="text-xs text-[var(--color-text-tertiary)]">
-              Press <kbd className="px-1.5 py-0.5 bg-[var(--color-muted)] rounded text-[10px] font-mono">Enter</kbd> to add, <kbd className="px-1.5 py-0.5 bg-[var(--color-muted)] rounded text-[10px] font-mono">Shift+Enter</kbd> for new line
+              Press <kbd className="px-1.5 py-0.5 bg-[var(--color-muted)] rounded text-[10px] font-mono">Ctrl+Enter</kbd> to add, <kbd className="px-1.5 py-0.5 bg-[var(--color-muted)] rounded text-[10px] font-mono">Enter</kbd> for new line
             </p>
           </div>
         )}
