@@ -48,18 +48,27 @@ const EditModal = ({ todo, onSave, onClose, availableTags = [] }) => {
     onClose()
   }
 
+  // Prevent closing when clicking inside modal
+  const handleModalClick = (e) => {
+    e.stopPropagation()
+  }
+
   if (!todo) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
-        className="modal-backdrop"
+        className="fixed inset-0 bg-black/50"
+        style={{ backdropFilter: 'none' }}
         onClick={onClose}
       />
       
       {/* Modal */}
-      <div className="modal-content w-full max-w-lg">
+      <div 
+        className="relative w-full max-w-lg bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-2xl z-10"
+        onClick={handleModalClick}
+      >
         {/* Header */}
         <div className="px-6 py-5 border-b border-[var(--color-border)] flex items-center justify-between">
           <div>
@@ -92,7 +101,7 @@ const EditModal = ({ todo, onSave, onClose, availableTags = [] }) => {
               onChange={(e) => setContent(e.target.value)}
               placeholder="What needs to be done?"
               rows={3}
-              className="input resize-none"
+              className="w-full px-3 py-2 border border-[var(--color-border)] rounded-lg bg-[var(--color-surface)] text-[var(--color-text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/20 focus:border-[var(--color-accent)] resize-none"
               autoFocus
             />
           </div>
@@ -123,17 +132,17 @@ const EditModal = ({ todo, onSave, onClose, availableTags = [] }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-[var(--color-muted)]/50 border-t border-[var(--color-border)] flex justify-end gap-3">
+        <div className="px-6 py-4 bg-[var(--color-muted)]/50 border-t border-[var(--color-border)] flex justify-end gap-3 rounded-b-2xl">
           <button
             onClick={onClose}
-            className="btn btn-ghost"
+            className="px-4 py-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-muted)] rounded-lg transition-all"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={!content.trim()}
-            className="btn btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
+            className="px-4 py-2 text-sm font-medium text-white bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Save Changes
           </button>

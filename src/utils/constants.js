@@ -57,7 +57,7 @@ export const DB_CONFIG = {
 }
 
 // Max tags per todo
-export const MAX_TAGS = 5
+export const MAX_TAGS = 10
 
 // Tag colors (CSS classes)
 export const TAG_COLORS = [

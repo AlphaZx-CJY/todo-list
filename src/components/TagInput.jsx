@@ -33,7 +33,7 @@ const TagInput = ({ tags = [], onChange, suggestions = [] }) => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative z-50">
       <div 
         className={`
           flex flex-wrap items-center gap-2 p-3 border rounded-xl bg-[var(--color-surface)]
@@ -76,15 +76,22 @@ const TagInput = ({ tags = [], onChange, suggestions = [] }) => {
             onKeyDown={handleKeyDown}
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-            placeholder={tags.length === 0 ? 'Add tags...' : ''}
+            placeholder={tags.length === 0 ? `Add tags (max ${MAX_TAGS})...` : ''}
             className="flex-1 min-w-[80px] outline-none text-sm bg-transparent text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)]"
           />
         )}
       </div>
       
+      {/* Tag count hint */}
+      {tags.length > 0 && (
+        <p className="text-xs text-[var(--color-text-tertiary)] mt-1.5">
+          {tags.length}/{MAX_TAGS} tags added
+        </p>
+      )}
+      
       {/* Suggestions */}
       {showSuggestions && availableSuggestions.length > 0 && (
-        <div className="absolute z-10 mt-2 w-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-lg max-h-40 overflow-y-auto">
+        <div className="absolute z-[60] mt-2 w-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-xl max-h-40 overflow-y-auto">
           {availableSuggestions.map((suggestion) => (
             <button
               key={suggestion}

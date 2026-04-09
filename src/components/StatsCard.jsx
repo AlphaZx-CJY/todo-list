@@ -62,12 +62,12 @@ const StatsCard = ({ stats }) => {
   return (
     <div className="space-y-5">
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {cards.map((card) => (
           <div
             key={card.label}
             className={`
-              relative overflow-hidden rounded-xl p-4 border transition-all duration-200
+              relative overflow-hidden rounded-xl p-3 md:p-4 border transition-all duration-200
               ${card.bgColor} ${card.borderColor}
               ${card.pulse ? 'ring-2 ring-red-100' : ''}
             `}
@@ -77,7 +77,7 @@ const StatsCard = ({ stats }) => {
                 <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-text-tertiary)] mb-1">
                   {card.label}
                 </p>
-                <p className={`text-2xl font-semibold tracking-tight ${card.color}`}>
+                <p className={`text-xl md:text-2xl font-semibold tracking-tight ${card.color}`}>
                   {card.value}
                 </p>
               </div>
