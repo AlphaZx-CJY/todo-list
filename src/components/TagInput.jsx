@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { MAX_TAGS } from '../utils/constants'
 
 const TagInput = ({ tags = [], onChange, suggestions = [] }) => {
   const [inputValue, setInputValue] = useState('')
@@ -13,7 +12,7 @@ const TagInput = ({ tags = [], onChange, suggestions = [] }) => {
 
   const addTag = (tag) => {
     const trimmed = tag.trim()
-    if (trimmed && !tags.includes(trimmed) && tags.length < MAX_TAGS) {
+    if (trimmed && !tags.includes(trimmed)) {
       onChange([...tags, trimmed])
       setInputValue('')
     }
@@ -38,7 +37,7 @@ const TagInput = ({ tags = [], onChange, suggestions = [] }) => {
         className={`
           flex flex-wrap items-center gap-2 p-3 border rounded-xl bg-[var(--color-surface)]
           transition-all duration-200
-          ${tags.length >= MAX_TAGS ? 'bg-[var(--color-muted)]' : 'focus-within:border-[var(--color-text-secondary)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/10'}
+          focus-within:border-[var(--color-text-secondary)] focus-within:ring-1 focus-within:ring-[var(--color-accent)]/10
         `}
         onClick={() => inputRef.current?.focus()}
       >
@@ -64,28 +63,32 @@ const TagInput = ({ tags = [], onChange, suggestions = [] }) => {
           </span>
         ))}
         
-        {tags.length < MAX_TAGS && (
-          <input
-            ref={inputRef}
-            type="text"
-            value={inputValue}
-            onChange={(e) => {
-              setInputValue(e.target.value)
-              setShowSuggestions(true)
-            }}
-            onKeyDown={handleKeyDown}
-            onFocus={() => setShowSuggestions(true)}
-            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-            placeholder={tags.length === 0 ? `Add tags (max ${MAX_TAGS})...` : ''}
-            className="flex-1 min-w-[80px] outline-none text-sm bg-transparent text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)]"
-          />
-        )}
+        <input
+          ref={inputRef}
+          type="text"
+          value={inputValue}
+          onChange={(e) => {
+            setInputValue(e.target.value)
+            setShowSuggestions(true)
+          }}
+          onKeyDown={handleKeyDown}
+          onFocus={() => setShowSuggestions(true)}
+          onBlur={() => {
+            // 失去焦点时自动添加输入的内容为tag
+            if (inputValue.trim()) {
+              addTag(inputValue)
+            }
+            setTimeout(() => setShowSuggestions(false), 200)
+          }}
+          placeholder={tags.length === 0 ? 'Add tags...' : ''}
+          className="flex-1 min-w-[80px] outline-none text-sm bg-transparent text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)]"
+        />
       </div>
       
       {/* Tag count hint */}
       {tags.length > 0 && (
         <p className="text-xs text-[var(--color-text-tertiary)] mt-1.5">
-          {tags.length}/{MAX_TAGS} tags added
+          {tags.length} tag{tags.length > 1 ? 's' : ''} added
         </p>
       )}
       
