@@ -236,12 +236,32 @@ body {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  transition: all var(--transition-base);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  contain: layout style;
 }
 
 .card:hover {
   border-color: var(--color-text-tertiary);
   box-shadow: var(--shadow-md);
+}
+
+/* 滚动性能优化 */
+.scroll-container {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  contain: layout style paint;
+}
+
+/* 减少动画偏好支持 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .card-elevated {
@@ -449,9 +469,19 @@ body {
    ============================================ */
 
 .glass {
-  background: rgb(255 255 255 / 0.8);
-  backdrop-filter: blur(12px);
+  background: rgb(255 255 255 / 0.95);
   border-bottom: 1px solid var(--color-border);
+  will-change: transform;
+  contain: layout style paint;
+}
+
+/* 为支持 backdrop-filter 的浏览器添加渐进增强 */
+@supports (backdrop-filter: blur(8px)) and (not (hover: none)) {
+  .glass {
+    background: rgb(255 255 255 / 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
 }
 
 .divide-dashed {
@@ -461,11 +491,17 @@ body {
 /* Hover lift effect */
 .hover-lift {
   transition: transform var(--transition-base), box-shadow var(--transition-base);
+  will-change: transform;
 }
 
 .hover-lift:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
+}
+
+/* 优化粘性定位元素的性能 */
+.sticky {
+  contain: layout style paint;
 }
 
 /* Focus styles */
@@ -482,13 +518,20 @@ body {
   background-clip: text;
 }
 
-/* Grain texture overlay */
+/* Grain texture overlay - 使用 CSS 生成的静态噪点图案，性能更好 */
+.grain {
+  position: relative;
+}
+
 .grain::before {
   content: '';
-  position: absolute;
+  position: fixed;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  opacity: 0.03;
+  background-image: 
+    repeating-radial-gradient(circle at 0 0, transparent 0, rgba(0,0,0,0.03) 2px, transparent 3px),
+    repeating-radial-gradient(circle at 100% 100%, transparent 0, rgba(0,0,0,0.02) 1px, transparent 2px);
+  background-size: 100px 100px, 150px 150px;
+  opacity: 0.4;
   pointer-events: none;
-  mix-blend-mode: multiply;
+  z-index: -1;
 }

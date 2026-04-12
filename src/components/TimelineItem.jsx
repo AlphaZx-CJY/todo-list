@@ -1,8 +1,9 @@
+import { memo } from 'react'
 import PropTypes from 'prop-types'
 import { PRIORITY_LABELS } from '../utils/constants'
 import { formatDate, formatRelativeTime, isOverdue } from '../utils/dateUtils'
 
-const TimelineItem = ({ todo, onToggle, onDelete, onEdit, isLast }) => {
+const TimelineItem = memo(({ todo, onToggle, onDelete, onEdit, isLast }) => {
   const { id, content, isFinish, priority, dueDate, tags, timestamp, completedAt } = todo
   const overdue = !isFinish && isOverdue(dueDate)
 
@@ -136,7 +137,7 @@ const TimelineItem = ({ todo, onToggle, onDelete, onEdit, isLast }) => {
       </div>
     </div>
   )
-}
+})
 
 TimelineItem.propTypes = {
   todo: PropTypes.shape({
@@ -154,5 +155,7 @@ TimelineItem.propTypes = {
   onEdit: PropTypes.func.isRequired,
   isLast: PropTypes.bool,
 }
+
+TimelineItem.displayName = 'TimelineItem'
 
 export default TimelineItem

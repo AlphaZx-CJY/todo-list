@@ -1,8 +1,9 @@
+import { memo } from 'react'
 import PropTypes from 'prop-types'
 import { PRIORITY_LABELS } from '../utils/constants'
 import { formatDate, isOverdue } from '../utils/dateUtils'
 
-const TodoItem = ({ timestamp, content, isFinish, priority, dueDate, tags, onChecked, onDelete, onEdit }) => {
+const TodoItem = memo(({ timestamp, content, isFinish, priority, dueDate, tags, onChecked, onDelete, onEdit }) => {
   const overdue = !isFinish && isOverdue(dueDate)
 
   const getPriorityDot = () => {
@@ -105,7 +106,7 @@ const TodoItem = ({ timestamp, content, isFinish, priority, dueDate, tags, onChe
       </button>
     </div>
   )
-}
+})
 
 TodoItem.propTypes = {
   timestamp: PropTypes.number.isRequired,
@@ -124,5 +125,7 @@ TodoItem.defaultProps = {
   dueDate: null,
   tags: [],
 }
+
+TodoItem.displayName = 'TodoItem'
 
 export default TodoItem

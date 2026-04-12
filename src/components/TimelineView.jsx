@@ -1,11 +1,12 @@
+import { memo, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { groupByTimeline } from '../utils/dateUtils'
 import { TIMELINE_LABELS } from '../utils/constants'
 import TimelineItem from './TimelineItem'
 import EmptyState from './EmptyState'
 
-const TimelineView = ({ todos, onToggle, onDelete, onEdit }) => {
-  const groups = groupByTimeline(todos)
+const TimelineView = memo(({ todos, onToggle, onDelete, onEdit }) => {
+  const groups = useMemo(() => groupByTimeline(todos), [todos])
 
   const groupOrder = [
     'overdue',
@@ -53,7 +54,7 @@ const TimelineView = ({ todos, onToggle, onDelete, onEdit }) => {
         return (
           <section key={groupKey} className="relative">
             {/* Group Header */}
-            <div className="flex items-center gap-4 mb-5 sticky top-[200px] z-10">
+            <div className="flex items-center gap-4 mb-5 sticky top-[200px] z-10 glass !bg-[var(--color-surface)]/95">
               <span className={`
                 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider border
                 ${getGroupStyle(groupKey)}
@@ -84,7 +85,7 @@ const TimelineView = ({ todos, onToggle, onDelete, onEdit }) => {
       })}
     </div>
   )
-}
+})
 
 TimelineView.propTypes = {
   todos: PropTypes.arrayOf(PropTypes.shape({
@@ -101,5 +102,7 @@ TimelineView.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
 }
+
+TimelineView.displayName = 'TimelineView'
 
 export default TimelineView

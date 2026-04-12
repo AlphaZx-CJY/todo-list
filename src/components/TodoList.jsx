@@ -1,28 +1,33 @@
+import { memo, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import TodoItem from './TodoItem'
 import EmptyState from './EmptyState'
 import { PRIORITY } from '../utils/constants'
 
-const TodoList = ({ items, onToggle, onDelete, onEdit }) => {
-  const unfinished = items.filter(item => !item.isFinish)
-  const finished = items.filter(item => item.isFinish)
+const TodoList = memo(({ items, onToggle, onDelete, onEdit }) => {
+  const { sortedUnfinished, sortedFinished } = useMemo(() => {
+    const unfinished = items.filter(item => !item.isFinish)
+    const finished = items.filter(item => item.isFinish)
 
-  // Sort unfinished by priority and due date
-  const sortedUnfinished = [...unfinished].sort((a, b) => {
-    if (a.dueDate && b.dueDate) {
-      return new Date(a.dueDate) - new Date(b.dueDate)
-    }
-    if (a.dueDate) return -1
-    if (b.dueDate) return 1
-    
-    const priorityOrder = { [PRIORITY.HIGH]: 0, [PRIORITY.MEDIUM]: 1, [PRIORITY.LOW]: 2 }
-    return priorityOrder[a.priority] - priorityOrder[b.priority]
-  })
+    // Sort unfinished by priority and due date
+    const sortedUnfinished = [...unfinished].sort((a, b) => {
+      if (a.dueDate && b.dueDate) {
+        return new Date(a.dueDate) - new Date(b.dueDate)
+      }
+      if (a.dueDate) return -1
+      if (b.dueDate) return 1
+      
+      const priorityOrder = { [PRIORITY.HIGH]: 0, [PRIORITY.MEDIUM]: 1, [PRIORITY.LOW]: 2 }
+      return priorityOrder[a.priority] - priorityOrder[b.priority]
+    })
 
-  // Sort finished by completion time
-  const sortedFinished = [...finished].sort((a, b) => 
-    (b.completedAt || 0) - (a.completedAt || 0)
-  )
+    // Sort finished by completion time
+    const sortedFinished = [...finished].sort((a, b) => 
+      (b.completedAt || 0) - (a.completedAt || 0)
+    )
+
+    return { sortedUnfinished, sortedFinished }
+  }, [items])
 
   if (items.length === 0) {
     return <EmptyState type="default" />
@@ -91,7 +96,7 @@ const TodoList = ({ items, onToggle, onDelete, onEdit }) => {
       )}
     </div>
   )
-}
+})
 
 TodoList.propTypes = {
   items: PropTypes.arrayOf(
@@ -109,5 +114,7 @@ TodoList.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
 }
+
+TodoList.displayName = 'TodoList'
 
 export default TodoList
