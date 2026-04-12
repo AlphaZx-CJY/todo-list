@@ -115,8 +115,8 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
 
         {/* Expanded Options */}
         <div className={`
-          overflow-hidden transition-all duration-300 ease-out
-          ${isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}
+          transition-all duration-300 ease-out
+          ${isExpanded ? 'max-h-96 opacity-100 overflow-visible' : 'max-h-0 opacity-0 overflow-hidden'}
         `}>
           <div 
             className="px-4 pb-4 pt-2 border-t border-[var(--color-border-subtle)] space-y-4"
@@ -138,21 +138,19 @@ const InputArea = ({ onSubmit, availableTags = [] }) => {
             {/* Tags */}
             <div className="flex items-start gap-4">
               <span className="text-sm text-[var(--color-text-secondary)] font-medium min-w-[4.5rem] pt-2">Tags</span>
-              <div className="flex-1 relative z-30">
+              <div className="flex-1">
                 <TagInput tags={tags} onChange={setTags} suggestions={availableTags} />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Hint */}
-        {!isExpanded && (
-          <div className="px-4 pb-3 pt-1">
-            <p className="text-xs text-[var(--color-text-tertiary)]">
-              Press <kbd className="px-1.5 py-0.5 bg-[var(--color-muted)] rounded text-[10px] font-mono">Ctrl+Enter</kbd> to add, <kbd className="px-1.5 py-0.5 bg-[var(--color-muted)] rounded text-[10px] font-mono">Enter</kbd> for new line
-            </p>
-          </div>
-        )}
+        {/* Hint - 始终显示 */}
+        <div className="px-4 pb-3 pt-1">
+          <p className="text-xs text-[var(--color-text-tertiary)]">
+            Press <kbd className="px-1.5 py-0.5 bg-[var(--color-muted)] rounded text-[10px] font-mono">Ctrl+Enter</kbd> to add, <kbd className="px-1.5 py-0.5 bg-[var(--color-muted)] rounded text-[10px] font-mono">Enter</kbd> for new line
+          </p>
+        </div>
       </form>
     </div>
   )

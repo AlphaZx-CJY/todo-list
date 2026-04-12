@@ -54,7 +54,7 @@ const TimelineView = memo(({ todos, onToggle, onDelete, onEdit }) => {
         return (
           <section key={groupKey} className="relative">
             {/* Group Header */}
-            <div className="flex items-center gap-4 mb-5 sticky top-[200px] z-10 glass !bg-[var(--color-surface)]/95">
+            <div className="flex items-center gap-4 mb-5 sticky top-[200px] z-10">
               <span className={`
                 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider border
                 ${getGroupStyle(groupKey)}
