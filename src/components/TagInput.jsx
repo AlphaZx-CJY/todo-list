@@ -91,7 +91,7 @@ const TagInput = ({ tags = [], onChange, suggestions = [] }) => {
       
       {/* Suggestions */}
       {showSuggestions && availableSuggestions.length > 0 && (
-        <div className="absolute z-[60] mt-2 w-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-xl max-h-40 overflow-y-auto">
+        <div className="absolute z-[100] mt-2 w-full bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl shadow-xl max-h-40 overflow-y-auto">
           {availableSuggestions.map((suggestion) => (
             <button
               key={suggestion}
