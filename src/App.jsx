@@ -155,7 +155,7 @@ const App = () => {
       {/* Main Content */}
       <main className="max-w-4xl mx-auto px-6 py-8">
         {/* Input */}
-        <div className="mb-6 animate-fade-in-up">
+        <div className="mb-6 animate-fade-in-up relative z-30">
           <InputArea 
             onSubmit={handleAddTodo}
             availableTags={stats.tags}
@@ -163,7 +163,7 @@ const App = () => {
         </div>
 
         {/* Filters */}
-        <div className="mb-6 animate-fade-in-up stagger-1">
+        <div className="mb-6 animate-fade-in-up stagger-1 relative z-20">
           <FilterBar
             filter={filter}
             onChange={setFilter}
